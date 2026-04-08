@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noticias de prensa — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+      --red: #C0392B;
+      --red2: #FDECEA;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: all .4s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    /* ── MOBILE MENU ────────────────── */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #1D1D1F;
+      transform: translateY(-100%);
+      transition: transform .5s cubic-bezier(.32, .72, 0, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px;
+    }
+
+    .mobile-overlay.open {
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mobile-nav-links li { border-bottom: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-links li:first-child { border-top: 1px solid rgba(255,255,255,.08); }
+
+    .mobile-nav-links a {
+      font-size: clamp(1.6rem, 7vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+      color: #F5F5F7;
+      text-decoration: none;
+      display: block;
+      padding: 20px 0;
+      transition: color .2s ease;
+    }
+
+    .mobile-nav-links a:hover { color: rgba(245,245,247,.5); }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #F5F5F7;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      #nav { left: 12px; right: 12px; transform: none; width: auto; }
+      .nav-inner { justify-content: space-between; padding: 10px 16px; border-radius: 16px; white-space: nowrap; }
+      .nav-logo img { height: 24px; }
+      .nav-logo { margin-right: 0; flex-shrink: 0; }
+      .nav-links { display: none; }
+      
+      
+      .nav-cta { display: none; }
+      
+      .hamburger { display: flex; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-cta { display: none; }
+      .nav-links a { font-size: 11px; padding: 5px 8px; }
+    }
+
+    /* ── PAGE ────────────────────────── */
+    .page {
+      min-height: 100dvh;
+      padding: 120px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* ── HEADER ──────────────────────── */
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 16px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .page-sub {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 64px;
+      line-height: 1.65;
+    }
+
+    /* ── BACK LINK ───────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    /* ── AVISO ───────────────────────── */
+    .aviso {
+      background: var(--accent2);
+      border: 1px solid rgba(146, 64, 14, .2);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 56px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .aviso-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .aviso-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .aviso-text {
+      font-size: .88rem;
+      line-height: 1.65;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── ARTÍCULOS ───────────────────── */
+    .articles {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .article {
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 20px;
+      padding: 32px 36px;
+      transition: transform .5s cubic-bezier(.32,.72,0,1), box-shadow .5s cubic-bezier(.32,.72,0,1);
+    }
+
+    .article:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px -16px rgba(0,0,0,.1);
+    }
+
+    .article.urgent {
+      background: var(--red2);
+      border-color: rgba(192, 57, 43, .15);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .article-date {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .article-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .article-location {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent2);
+      padding: 2px 9px;
+      border-radius: 980px;
+    }
+
+    .article.urgent .article-location {
+      color: var(--red);
+      background: rgba(192, 57, 43, .1);
+    }
+
+    .article-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--red);
+      padding: 2px 9px;
+      border-radius: 980px;
+    }
+
+    .article-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+
+    .article-body {
+      font-size: .92rem;
+      line-height: 1.7;
+      color: var(--gray);
+    }
+
+    .article-body strong {
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .article-callout {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(146, 64, 14, .07);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 16px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      transition: gap .25s ease;
+    }
+
+    .article-link:hover { gap: 9px; }
+
+    /* ── FOOTER ──────────────────────── */
+    .footer {
+      margin-top: 80px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      width: 100%;
+    }
+
+    .footer p { font-size: .8rem; color: var(--gray); }
+
+    @media (max-width: 640px) {
+      .article { padding: 24px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><img src="VISUAL/NUEVO-LOGO.png" alt="Cantimploras Galayo" style="height:28px;width:auto;display:block;position:relative;top:-2px;"></a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#servicios">Servicios</a></li>
+        <li><a href="index.html#itc">Alquiler</a></li>
+        <li><a href="index.html#recursos">Recursos</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a href="index.html#contacto" class="nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .92h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Contacto
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- Mobile Menu -->
+  <div class="mobile-overlay" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="1" y1="1" x2="17" y2="17" /><line x1="17" y1="1" x2="1" y2="17" />
+      </svg>
+    </button>
+    <ul class="mobile-nav-links" id="mobileLinks">
+      <li><a href="precios.html" class="mobile-link">Productos</a></li>
+      <li><a href="alquiler.html" class="mobile-link">Alquiler</a></li>
+      <li><a href="historia.html" class="mobile-link">Historia</a></li>
+      <li><a href="galería.html" class="mobile-link">Galería</a></li>
+      <li><a href="vídeos.html" class="mobile-link">Vídeos</a></li>
+    </ul>
+  </div>
+
+  <div class="page">
+    <div class="page-inner">
+
+      <a href="index.html" class="back-link" id="backLink">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 7H2M7 12l-5-5 5-5" />
+        </svg>
+        Volver
+      </a>
+
+      <p class="eyebrow" id="eyebrow">Cobertura mediática</p>
+      <h1 class="page-h1" id="pageH1">Noticias de prensa.</h1>
+      <p class="page-sub" id="pageSub">Recopilación de accidentes e incidentes relacionados con el uso de cantimploras y recipientes de pólvora negra en festividades. Una razón más para elegir equipamiento homologado y seguro.</p>
+
+      <div class="aviso reveal">
+        <div class="aviso-icon">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <p class="aviso-text">Estos accidentes se produjeron con recipientes de pólvora sin homologar o en mal estado. Las cantimploras Galayo cuentan con patente propia, materiales ignífugos y diseño de seguridad certificado desde 1969.</p>
+      </div>
+
+      <div class="articles">
+
+        <!-- 1 -->
+        <div class="article urgent reveal">
+          <div class="article-meta">
+            <span class="article-date">Agosto 2016</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Villena, Alicante</span>
+            <span class="article-badge">Grave</span>
+          </div>
+          <h2 class="article-title">Explosión de dos cantimploras de 3 kg sin tapa antichispas</h2>
+          <p class="article-body">
+            Dos recipientes de pólvora de 3 kg explotaron durante las festividades. Los envases <strong>carecían de tapa antichispas</strong>, elemento de seguridad obligatorio. El incidente provocó quemaduras en varios participantes y puso de manifiesto el riesgo de usar material sin homologar en actos de pólvora.
+          </p>
+          <div class="article-callout">Revisa tu cantimplora — con la pólvora no te la juegues.</div>
+        </div>
+
+        <!-- 2 -->
+        <div class="article urgent reveal">
+          <div class="article-meta">
+            <span class="article-date">Mayo 2016</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Ripoll, Girona</span>
+            <span class="article-badge">Muy grave</span>
+          </div>
+          <h2 class="article-title">Tres miembros de la Colla de Castellar de Riu con quemaduras graves</h2>
+          <p class="article-body">
+            Durante la recreación teatralizada de la Destrucción de Ripoll (177 aniversario), tres miembros de la <strong>Colla de Castellar de Riu</strong> sufrieron quemaduras serias en las manos. Un fotógrafo que cubría el acto resultó quemado en el <strong>80% del cuerpo</strong> y fue trasladado al Hospital de La Vall d'Hebron en estado crítico. Varios heridos fueron atendidos también en el Hospital de Campdevànol.
+          </p>
+        </div>
+
+        <!-- 3 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">Septiembre 2015</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Ibi, Alicante</span>
+          </div>
+          <h2 class="article-title">Explosión de trabuco de alquiler durante las fiestas</h2>
+          <p class="article-body">
+            Un trabuco de alquiler explotó durante el transcurso de las festividades locales. El participante afectado sufrió <strong>quemaduras en el pulgar derecho</strong>. El incidente se atribuye al deterioro del material de alquiler sin mantenimiento certificado.
+          </p>
+        </div>
+
+        <!-- 4 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">2015</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Ontinyent, Valencia</span>
+          </div>
+          <h2 class="article-title">Al menos dos cantimploras de alquiler explotan en festividades</h2>
+          <p class="article-body">
+            Al menos dos recipientes de alquiler explotaron durante las fiestas de Ontinyent. Un joven sufrió <strong>quemaduras de primer y segundo grado</strong>. Los envases no cumplían con los requisitos de seguridad vigentes. El suceso generó un debate público sobre la regulación del material de pólvora en festividades.
+          </p>
+          <div class="article-callout">Revisa tu cantimplora — con la pólvora no te la juegues.</div>
+        </div>
+
+        <!-- 5 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">2009 – 2010</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Alcoy, Alicante</span>
+          </div>
+          <h2 class="article-title">Guardia Civil supervisa el Alardo de Alcoy y controla límites de pólvora</h2>
+          <p class="article-body">
+            La Guardia Civil supervisó el Alardo de las festividades de Alcoy, verificando que cada participante no superase el límite de <strong>1 kg de pólvora por persona</strong>. Los controles, aunque esporádicos, pusieron en evidencia el <strong>vacío legal</strong> existente en la regulación del uso de pólvora negra en festejos populares, que no sería abordado hasta el RD 130/2017.
+          </p>
+        </div>
+
+        <!-- 6 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">7 de diciembre de 2006</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Yecla, Murcia</span>
+          </div>
+          <h2 class="article-title">Explosión de cántaro de arcilla ignífugo en acto festivo</h2>
+          <p class="article-body">
+            Un cántaro de arcilla utilizado como recipiente de pólvora explotó durante las festividades de Yecla. El incidente evidenció los riesgos del uso de <strong>recipientes artesanales sin homologación</strong> como contenedores de pólvora negra en actos populares.
+          </p>
+          <a href="http://www.laverdad.es/murcia/20071114/comarcas/yecla-arcabuces-bajo-vigilancia-20071114.html" target="_blank" rel="noopener" class="article-link">
+            Leer en La Verdad
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+        <!-- 7 -->
+        <div class="article urgent reveal">
+          <div class="article-meta">
+            <span class="article-date">Agosto 2008</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Elche, Alicante</span>
+            <span class="article-badge">Grave</span>
+          </div>
+          <h2 class="article-title">Cuatro heridos en explosión de trabuco — un participante pierde dos dedos</h2>
+          <p class="article-body">
+            La explosión de un trabuco durante las fiestas de Elche causó heridas a <strong>cuatro personas</strong>. Uno de los participantes sufrió la <strong>amputación de dos dedos</strong> a consecuencia de la deflagración. El accidente subrayó la necesidad de regulación y de materiales certificados en los actos de arcabucería festiva.
+          </p>
+          <a href="http://www.elmundo.es/elmundo/2008/08/11/valencia/1218458168.html" target="_blank" rel="noopener" class="article-link">
+            Leer en El Mundo
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+        <!-- 8 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">2004</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Alcoy, Alicante</span>
+          </div>
+          <h2 class="article-title">Accidente con pólvora en festividades — Galayo responde con nuevo diseño</h2>
+          <p class="article-body">
+            Tras un incidente con pólvora durante las fiestas de Alcoy, Cantimploras Galayo presentó un <strong>nuevo diseño de cantimplora</strong> orientado a minimizar la manipulación directa de la pólvora por parte del festero. La innovación redujo significativamente el contacto entre el usuario y la carga durante el proceso de disparo.
+          </p>
+          <a href="http://cadenaser.com/ser/2004/04/24/espana/1082764215_850215.html" target="_blank" rel="noopener" class="article-link">
+            Leer en Cadena SER
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+        <!-- 9 -->
+        <div class="article urgent reveal">
+          <div class="article-meta">
+            <span class="article-date">27 de julio de 2001</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Villajoyosa, Alicante</span>
+            <span class="article-badge">Grave</span>
+          </div>
+          <h2 class="article-title">Explosión en cadena de recipientes metálicos de alquiler</h2>
+          <p class="article-body">
+            Un recipiente metálico de pólvora deteriorado explotó durante las fiestas, desencadenando una <strong>reacción en cadena</strong> que afectó a otros contenedores de alquiler cercanos. Los recipientes metálicos, al fragmentarse, generan <strong>metralla letal</strong>. El suceso fue determinante para alertar sobre la peligrosidad de los materiales metálicos como contenedores de pólvora negra en espacios festivos.
+          </p>
+          <a href="http://www.abc.es/hemeroteca/historico-09-08-2001/abc/Valencia/uno-de-los-heridos-de-la-explosion-de-polvora-de-villajoyosa-fallece-por-las-quemaduras-en-el-hospital_39269.HTML" target="_blank" rel="noopener" class="article-link">
+            Leer en ABC.es
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+        <!-- 10 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">20 de diciembre de 1999</span>
+            <span class="article-dot"></span>
+            <span class="article-location">Yecla, Murcia</span>
+          </div>
+          <h2 class="article-title">Explosión de vasija de barro usada como depósito de pólvora</h2>
+          <p class="article-body">
+            Una vasija de barro empleada como depósito de pólvora negra explotó durante los actos festivos de Yecla, causando heridas entre los presentes. El incidente alertó sobre el uso de <strong>recipientes domésticos no homologados</strong> como sustituto de cantimploras certificadas.
+          </p>
+          <a href="http://elpais.com/diario/1999/12/20/espana/945644427_850215.html" target="_blank" rel="noopener" class="article-link">
+            Leer en El País
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+        <!-- 11 -->
+        <div class="article reveal">
+          <div class="article-meta">
+            <span class="article-date">13 de octubre de 1987</span>
+            <span class="article-dot"></span>
+            <span class="article-location">El Campello, Alicante</span>
+          </div>
+          <h2 class="article-title">Explosión de caja metálica con perdigones de pólvora</h2>
+          <p class="article-body">
+            Una caja metálica que contenía pellets de pólvora negra explotó durante las festividades de El Campello. Uno de los primeros casos documentados de accidente grave con <strong>material metálico no homologado</strong> en el contexto de Moros y Cristianos, que sentó precedente sobre la necesidad de regulación del sector.
+          </p>
+          <a href="http://elpais.com/diario/1987/10/13/espana/561078008_850215.html" target="_blank" rel="noopener" class="article-link">
+            Leer en El País
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <p>Copyright © 2025 Cantimploras Galayo. Producto patentado. Prohibida su reproducción.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    gsap.set(['#backLink', '#eyebrow', '#pageH1', '#pageSub'], { opacity: 0, y: 20 });
+    gsap.to('#backLink', { opacity: 1, y: 0, duration: .7, delay: .1,  ease: 'power3.out' });
+    gsap.to('#eyebrow',  { opacity: 1, y: 0, duration: .8, delay: .2,  ease: 'power3.out' });
+    gsap.to('#pageH1',   { opacity: 1, y: 0, duration: .9, delay: .35, ease: 'power3.out' });
+    gsap.to('#pageSub',  { opacity: 1, y: 0, duration: .8, delay: .5,  ease: 'power3.out' });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          gsap.to(entry.target, { opacity: 1, y: 0, duration: .7, ease: 'power3.out' });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      gsap.set(el, { opacity: 0, y: 30 });
+      observer.observe(el);
+    });
+
+    /* ─── MOBILE MENU ─── */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      gsap.fromTo('.mobile-nav-links li', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .45, stagger: .07, ease: 'power3.out', delay: .25 });
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+      
+    }
+    hamburger.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+  </script>
+
+</body>
+</html>

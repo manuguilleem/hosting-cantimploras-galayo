@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vídeos de interés — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: all .4s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    /* ── MOBILE MENU ────────────────── */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #1D1D1F;
+      transform: translateY(-100%);
+      transition: transform .5s cubic-bezier(.32, .72, 0, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px;
+    }
+
+    .mobile-overlay.open {
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mobile-nav-links li { border-bottom: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-links li:first-child { border-top: 1px solid rgba(255,255,255,.08); }
+
+    .mobile-nav-links a {
+      font-size: clamp(1.6rem, 7vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+      color: #F5F5F7;
+      text-decoration: none;
+      display: block;
+      padding: 20px 0;
+      transition: color .2s ease;
+    }
+
+    .mobile-nav-links a:hover { color: rgba(245,245,247,.5); }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #F5F5F7;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      #nav { left: 12px; right: 12px; transform: none; width: auto; }
+      .nav-inner { justify-content: space-between; padding: 10px 16px; border-radius: 16px; white-space: nowrap; }
+      .nav-logo img { height: 24px; }
+      .nav-logo { margin-right: 0; flex-shrink: 0; }
+      .nav-links { display: none; }
+      
+      
+      .nav-cta { display: none; }
+      
+      .hamburger { display: flex; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-cta { display: none; }
+      .nav-links a { font-size: 11px; padding: 5px 8px; }
+    }
+
+    /* ── PAGE ────────────────────────── */
+    .page {
+      min-height: 100dvh;
+      padding: 120px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    /* ── HEADER ──────────────────────── */
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 16px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .page-sub {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 64px;
+    }
+
+    /* ── BACK LINK ───────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    /* ── CATEGORY ────────────────────── */
+    .category {
+      margin-bottom: 72px;
+    }
+
+    .category-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .category-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── VIDEO GRID ──────────────────── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .video-grid.two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ── VIDEO CARD ──────────────────── */
+    .video-card {
+      background: var(--surface);
+      border: 1px solid rgba(0, 0, 0, .06);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: transform .5s cubic-bezier(.32, .72, 0, 1), box-shadow .5s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 60px -16px rgba(0, 0, 0, .14);
+    }
+
+    .video-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #1D1D1F;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      inset: 0;
+      transition: transform .6s cubic-bezier(.32, .72, 0, 1), filter .4s ease;
+    }
+
+    .video-thumb:hover img {
+      transform: scale(1.04);
+      filter: brightness(.85);
+    }
+
+    .video-thumb iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: absolute;
+      inset: 0;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: opacity .3s ease;
+    }
+
+    .video-thumb:hover .play-overlay { opacity: .9; }
+
+    .play-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,.28);
+      transition: transform .3s cubic-bezier(.32,.72,0,1), box-shadow .3s ease;
+    }
+
+    .video-thumb:hover .play-btn {
+      transform: scale(1.1);
+      box-shadow: 0 12px 40px rgba(0,0,0,.36);
+    }
+
+    .play-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent);
+      margin-left: 4px;
+    }
+
+    .video-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .video-info {
+      padding: 20px 22px 24px;
+    }
+
+    .video-title {
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .video-desc {
+      font-size: .82rem;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    /* ── FOOTER ──────────────────────── */
+    .footer {
+      margin-top: 80px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      width: 100%;
+    }
+
+    .footer p {
+      font-size: .8rem;
+      color: var(--gray);
+    }
+
+    /* ── RESPONSIVE ──────────────────── */
+    @media (max-width: 768px) {
+      .video-grid { grid-template-columns: 1fr; }
+      .video-grid.two-col { grid-template-columns: 1fr; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><img src="VISUAL/NUEVO-LOGO.png" alt="Cantimploras Galayo" style="height:28px;width:auto;display:block;position:relative;top:-2px;"></a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#servicios">Servicios</a></li>
+        <li><a href="index.html#itc">Alquiler</a></li>
+        <li><a href="index.html#recursos">Recursos</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a href="index.html#contacto" class="nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .92h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Contacto
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- Mobile Menu -->
+  <div class="mobile-overlay" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="1" y1="1" x2="17" y2="17" /><line x1="17" y1="1" x2="1" y2="17" />
+      </svg>
+    </button>
+    <ul class="mobile-nav-links" id="mobileLinks">
+      <li><a href="precios.html" class="mobile-link">Productos</a></li>
+      <li><a href="alquiler.html" class="mobile-link">Alquiler</a></li>
+      <li><a href="historia.html" class="mobile-link">Historia</a></li>
+      <li><a href="galería.html" class="mobile-link">Galería</a></li>
+      <li><a href="vídeos.html" class="mobile-link">Vídeos</a></li>
+    </ul>
+  </div>
+
+  <div class="page">
+    <div class="page-inner">
+
+      <a href="index.html" class="back-link" id="backLink">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 7H2M7 12l-5-5 5-5" />
+        </svg>
+        Volver
+      </a>
+
+      <p class="eyebrow" id="eyebrow">Recursos audiovisuales</p>
+      <h1 class="page-h1" id="pageH1">Vídeos de interés.</h1>
+      <p class="page-sub" id="pageSub">Demostraciones, instrucciones de uso, pruebas de seguridad y documentación de festividades. Todo lo que necesitas saber sobre nuestras cantimploras.</p>
+
+      <!-- ── DOSIFICACIÓN ──────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Dosificación</p>
+        <h2 class="category-title">Cómo funciona tu cantimplora</h2>
+        <div class="video-grid">
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="w6ya0RATUis">
+              <img src="https://img.youtube.com/vi/w6ya0RATUis/hqdefault.jpg" alt="Dosificación con diferente granulado" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Dosificación con diferente granulado</div>
+              <p class="video-desc">Demostración de cómo la cubeta dosificadora mide con precisión la pólvora negra con granulometría variable.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="gzyyPbTPvbw">
+              <img src="https://img.youtube.com/vi/gzyyPbTPvbw/hqdefault.jpg" alt="Dosificación con diferentes texturas y tamaños" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Dosificación con diferentes texturas y tamaños</div>
+              <p class="video-desc">Cómo se adapta el sistema a distintas texturas y tamaños de grano para garantizar un descenso correcto.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="6QCo8Qv4RvA">
+              <img src="https://img.youtube.com/vi/6QCo8Qv4RvA/hqdefault.jpg" alt="Trucos ante la obstrucción de la cubeta dosificadora" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Trucos ante la obstrucción de la cubeta dosificadora</div>
+              <p class="video-desc">Técnicas útiles cuando la cantimplora se encuentra obstruida, sin forzar el mecanismo.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── MANTENIMIENTO ─────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Mantenimiento</p>
+        <h2 class="category-title">Cuida tu equipo</h2>
+        <div class="video-grid two-col">
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="bG7sdmWjUPo">
+              <img src="https://img.youtube.com/vi/bG7sdmWjUPo/hqdefault.jpg" alt="Servicio de revisión y mantenimiento" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Servicio de revisión y mantenimiento</div>
+              <p class="video-desc">Presentación de nuestro servicio de revisión profesional. Mantenemos tu cantimplora a punto por solo 5 €.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="E5LjJTH3QTs">
+              <img src="https://img.youtube.com/vi/E5LjJTH3QTs/hqdefault.jpg" alt="Limpieza integral y puesta a punto" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Limpieza integral y puesta a punto</div>
+              <p class="video-desc">Cómo realizar una limpieza completa para garantizar la higiene y el correcto funcionamiento del equipo.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SEGURIDAD ─────────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Seguridad</p>
+        <h2 class="category-title">Pruebas y demostraciones</h2>
+        <div class="video-grid">
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="J4w7K-UcBU0">
+              <img src="https://img.youtube.com/vi/J4w7K-UcBU0/hqdefault.jpg" alt="Test de detonación" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+              <span class="video-badge">Prueba real</span>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Test de detonación: cantimplora de 3 kg antigua</div>
+              <p class="video-desc">Prueba controlada que muestra los riesgos de los modelos obsoletos y sin homologación vigente.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="UM8VIw0Soz0">
+              <img src="https://img.youtube.com/vi/UM8VIw0Soz0/hqdefault.jpg" alt="Explosión cantimplora 1 kg" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+              <span class="video-badge">Prueba real</span>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Explosión cantimplora 1 kg con materiales ignífugos</div>
+              <p class="video-desc">Demostración de cómo el diseño dirige la deflagración hacia el suelo para proteger al usuario.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="f6mLqUZTu5I">
+              <img src="https://img.youtube.com/vi/f6mLqUZTu5I/hqdefault.jpg" alt="7 diferencias: cantimplora segura vs. peligrosa" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">7 diferencias: cantimplora segura vs. peligrosa</div>
+              <p class="video-desc">Guía visual para identificar los elementos clave que distinguen una cantimplora homologada de una que no cumple la normativa.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── FESTIVIDADES ──────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Festividades</p>
+        <h2 class="category-title">En el corazón de Moros y Cristianos</h2>
+        <div class="video-grid">
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="y7jYjXjjhA4">
+              <img src="https://img.youtube.com/vi/y7jYjXjjhA4/hqdefault.jpg" alt="Alcoy 2018 — Alardo Moros y Cristianos" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Alcoy 2018 — Alardo Moros y Cristianos</div>
+              <p class="video-desc">Alcoy contó con cantimploras de alquiler seguro de Galayo en sus alardos de arcabucería 2018.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="PsS07oAQV10">
+              <img src="https://img.youtube.com/vi/PsS07oAQV10/hqdefault.jpg" alt="Rueda de disparo con cantimploras" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Rueda de disparo con cantimploras</div>
+              <p class="video-desc">Demostración de disparo de arcabuces usando únicamente cantimploras individuales como alternativa al carro de pólvora.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="IF3HknL30EI">
+              <img src="https://img.youtube.com/vi/IF3HknL30EI/hqdefault.jpg" alt="Disparo con capitanes y abanderados" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Disparo con capitanes y abanderados</div>
+              <p class="video-desc">Demostración en festividades con los responsables de comparsa. La cantimplora individual en acción.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="QahXC7n1ZhY">
+              <img src="https://img.youtube.com/vi/QahXC7n1ZhY/hqdefault.jpg" alt="Portadores individuales en festividades" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Portadores individuales en festividades</div>
+              <p class="video-desc">Cómo las cantimploras individuales están sustituyendo a los grandes carros en desfiles y actos centrales.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── NORMATIVA ─────────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Normativa y prensa</p>
+        <h2 class="category-title">Información y legislación</h2>
+        <div class="video-grid two-col">
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="3yhpBNZYglg">
+              <img src="https://img.youtube.com/vi/3yhpBNZYglg/hqdefault.jpg" alt="Entrevista en Canal 9" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Entrevista en Canal 9</div>
+              <p class="video-desc">Reportaje del extinto Canal 9 sobre Cantimploras Galayo y su papel en la seguridad de las festividades de pólvora.</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-thumb" data-id="5DL6EWRoN7Y">
+              <img src="https://img.youtube.com/vi/5DL6EWRoN7Y/hqdefault.jpg" alt="RD 130/2017 e ITC 26" loading="lazy">
+              <div class="play-overlay"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">RD 130/2017 e ITC 26 — Lo que debes saber</div>
+              <p class="video-desc">Vídeo explicativo sobre el Real Decreto y la Instrucción Técnica que regula el uso de explosivos en festividades populares.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Copyright © 2025 Cantimploras Galayo. Producto patentado. Prohibida su reproducción.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Animaciones de entrada ────────────────
+    gsap.set(['#backLink', '#eyebrow', '#pageH1', '#pageSub'], { opacity: 0, y: 20 });
+    gsap.to('#backLink', { opacity: 1, y: 0, duration: .7, delay: .1,  ease: 'power3.out' });
+    gsap.to('#eyebrow',  { opacity: 1, y: 0, duration: .8, delay: .2,  ease: 'power3.out' });
+    gsap.to('#pageH1',   { opacity: 1, y: 0, duration: .9, delay: .35, ease: 'power3.out' });
+    gsap.to('#pageSub',  { opacity: 1, y: 0, duration: .8, delay: .5,  ease: 'power3.out' });
+
+    // ── Reveal por scroll ─────────────────────
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          gsap.to(entry.target, { opacity: 1, y: 0, duration: .8, ease: 'power3.out' });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => {
+      gsap.set(el, { opacity: 0, y: 40 });
+      observer.observe(el);
+    });
+
+    // ── Abrir en YouTube ──────────────────────
+    document.querySelectorAll('.video-thumb[data-id]').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        window.open(`https://www.youtube.com/watch?v=${thumb.dataset.id}`, '_blank');
+      });
+    });
+
+    /* ─── MOBILE MENU ─── */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      gsap.fromTo('.mobile-nav-links li', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .45, stagger: .07, ease: 'power3.out', delay: .25 });
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+      
+    }
+    hamburger.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+  </script>
+
+</body>
+</html>

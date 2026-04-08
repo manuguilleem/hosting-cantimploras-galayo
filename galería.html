@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería de imágenes — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: all .4s cubic-bezier(.32, .72, 0, 1);
+    }
+
+    /* ── MOBILE MENU ────────────────── */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #1D1D1F;
+      transform: translateY(-100%);
+      transition: transform .5s cubic-bezier(.32, .72, 0, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px;
+    }
+
+    .mobile-overlay.open {
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .mobile-nav-links li { border-bottom: 1px solid rgba(255,255,255,.08); }
+    .mobile-nav-links li:first-child { border-top: 1px solid rgba(255,255,255,.08); }
+
+    .mobile-nav-links a {
+      font-size: clamp(1.6rem, 7vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+      color: #F5F5F7;
+      text-decoration: none;
+      display: block;
+      padding: 20px 0;
+      transition: color .2s ease;
+    }
+
+    .mobile-nav-links a:hover { color: rgba(245,245,247,.5); }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #F5F5F7;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      #nav { left: 12px; right: 12px; transform: none; width: auto; }
+      .nav-inner { justify-content: space-between; padding: 10px 16px; border-radius: 16px; white-space: nowrap; }
+      .nav-logo img { height: 24px; }
+      .nav-logo { margin-right: 0; flex-shrink: 0; }
+      .nav-links { display: none; }
+      
+      
+      .nav-cta { display: none; }
+      
+      .hamburger { display: flex; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-cta { display: none; }
+      .nav-links a { font-size: 11px; padding: 5px 8px; }
+    }
+
+    /* ── PAGE ────────────────────────── */
+    .page {
+      min-height: 100dvh;
+      padding: 120px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* ── HEADER ──────────────────────── */
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 16px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .page-sub {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 64px;
+    }
+
+    /* ── BACK LINK ───────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    /* ── CATEGORY ────────────────────── */
+    .category {
+      margin-bottom: 72px;
+    }
+
+    .category-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .category-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── MASONRY ─────────────────────── */
+    .masonry {
+      columns: 3;
+      column-gap: 16px;
+    }
+
+    .masonry.two-col { columns: 2; }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: zoom-in;
+      background: var(--surface);
+    }
+
+    .masonry-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform .6s cubic-bezier(.32, .72, 0, 1), filter .4s ease;
+    }
+
+    .masonry-item:hover img {
+      transform: scale(1.04);
+      filter: brightness(.88);
+    }
+
+    .masonry-item .img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.45) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity .4s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .masonry-item:hover .img-overlay { opacity: 1; }
+
+    .img-caption {
+      font-size: .78rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.9);
+      line-height: 1.4;
+      letter-spacing: -.01em;
+    }
+
+    /* ── LIGHTBOX ────────────────────── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0, 0, 0, .92);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+      padding: 20px;
+    }
+
+    #lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      border-radius: 16px;
+      object-fit: contain;
+      box-shadow: 0 40px 120px rgba(0,0,0,.6);
+      transition: transform .35s cubic-bezier(.32,.72,0,1);
+    }
+
+    #lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: rgba(255,255,255,.12);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s ease;
+    }
+
+    #lightbox-close:hover { background: rgba(255,255,255,.22); }
+
+    /* ── FOOTER ──────────────────────── */
+    .footer {
+      margin-top: 80px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      width: 100%;
+    }
+
+    .footer p { font-size: .8rem; color: var(--gray); }
+
+    /* ── RESPONSIVE ──────────────────── */
+    @media (max-width: 768px) {
+      .masonry { columns: 2; }
+      .masonry.two-col { columns: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .masonry { columns: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><img src="VISUAL/NUEVO-LOGO.png" alt="Cantimploras Galayo" style="height:28px;width:auto;display:block;position:relative;top:-2px;"></a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#servicios">Servicios</a></li>
+        <li><a href="index.html#itc">Alquiler</a></li>
+        <li><a href="index.html#recursos">Recursos</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a href="index.html#contacto" class="nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .92h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Contacto
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- Mobile Menu -->
+  <div class="mobile-overlay" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="1" y1="1" x2="17" y2="17" /><line x1="17" y1="1" x2="1" y2="17" />
+      </svg>
+    </button>
+    <ul class="mobile-nav-links" id="mobileLinks">
+      <li><a href="precios.html" class="mobile-link">Productos</a></li>
+      <li><a href="alquiler.html" class="mobile-link">Alquiler</a></li>
+      <li><a href="historia.html" class="mobile-link">Historia</a></li>
+      <li><a href="galería.html" class="mobile-link">Galería</a></li>
+      <li><a href="vídeos.html" class="mobile-link">Vídeos</a></li>
+    </ul>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox">
+    <button id="lightbox-close">✕</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <div class="page">
+    <div class="page-inner">
+
+      <a href="index.html" class="back-link" id="backLink">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 7H2M7 12l-5-5 5-5" />
+        </svg>
+        Volver
+      </a>
+
+      <p class="eyebrow" id="eyebrow">Archivo visual</p>
+      <h1 class="page-h1" id="pageH1">Galería de imágenes.</h1>
+      <p class="page-sub" id="pageSub">Fotografías de producto, festividades y documentación visual de nuestras cantimploras desde 1969. Haz clic en cualquier imagen para ampliarla.</p>
+
+      <!-- ── PRODUCTOS ──────────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Productos</p>
+        <h2 class="category-title">Nuestras cantimploras</h2>
+        <div class="masonry">
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/doble-cantimplora-y-guantes.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/doble-cantimplora-y-guantes.jpg" alt="Doble cantimplora y guantes" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Doble cantimplora con guantes</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/cantimploras-2kg-personalizadas.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/cantimploras-2kg-personalizadas.jpg" alt="Cantimploras 2 kg personalizadas" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cantimploras 2 kg personalizadas</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/perfil.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/perfil.jpg" alt="Perfil cantimplora" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Perfil</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cantimplora-1kg-personalizada.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cantimplora-1kg-personalizada.jpg" alt="Cantimplora 1 kg personalizada" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cantimplora 1 kg personalizada</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/cantimploras-2-y-3-kg.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/cantimploras-2-y-3-kg.jpg" alt="Cantimploras 2 y 3 kg" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cantimploras 2 y 3 kg</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cantimplora-2-kg-personalizada.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cantimplora-2-kg-personalizada.jpg" alt="Cantimplora 2 kg personalizada" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cantimplora 2 kg personalizada</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/doble_cantimplora.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/doble_cantimplora.jpg" alt="Doble cantimplora" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Doble cantimplora</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/depc3b3sitos-traseros-cartucheras-2-y-3-kg.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/01/depc3b3sitos-traseros-cartucheras-2-y-3-kg.jpg" alt="Depósitos traseros cartucheras 2 y 3 kg" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Depósitos traseros — 2 y 3 kg</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/02/evolucion-cantimploras-polvora.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/02/evolucion-cantimploras-polvora.jpg" alt="Evolución de las cantimploras" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Evolución de las cantimploras</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/polvoreres-1-kg-onil.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/polvoreres-1-kg-onil.jpg" alt="Polvoreres 1 kg Onil" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Polvoreres 1 kg — Onil</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/contrabandistes-oliva.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/contrabandistes-oliva.jpg" alt="Contrabandistes Oliva" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Contrabandistes — Oliva</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/contrabandistas-ontinyent.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/contrabandistas-ontinyent.jpg" alt="Contrabandistas Ontinyent" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Contrabandistas — Ontinyent</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/huestes-fernando-iii-murcia.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/huestes-fernando-iii-murcia.jpg" alt="Huestes Fernando III Murcia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Huestes Fernando III — Murcia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/almoravides-calpe.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/almoravides-calpe.jpg" alt="Almorávides Calpe" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Almorávides — Calpe</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/onil-halcones.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/onil-halcones.jpg" alt="Halcones Onil" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Halcones — Onil</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/mariners-castalla.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/mariners-castalla.jpg" alt="Mariners Castalla" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Mariners — Castalla</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/trabucaires-graus-huesca.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/trabucaires-graus-huesca.jpg" alt="Trabucaires Graus Huesca" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Trabucaires — Graus, Huesca</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/maseros-petrer.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/maseros-petrer.jpg" alt="Maseros Petrer" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Maseros — Petrer</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/leoneses-san-blas.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/leoneses-san-blas.jpg" alt="Leoneses San Blas" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Leoneses — San Blas</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/pirates-castalla.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/pirates-castalla.jpg" alt="Pirates Castalla" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Pirates — Castalla</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── FESTIVIDADES ────────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Festividades</p>
+        <h2 class="category-title">Moros y Cristianos</h2>
+        <div class="masonry">
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/02/galayo-capitan-contrabandistas.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/02/galayo-capitan-contrabandistas.jpg" alt="Galayo capitán contrabandistas" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Galayo — Capitán Contrabandistas</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/05/trabucaires-de-cassc3a0-de-la-selva.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2017/05/trabucaires-de-cassc3a0-de-la-selva.jpg" alt="Trabucaires de Cassà de la Selva" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Trabucaires — Cassà de la Selva</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-8.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-8.jpg" alt="Alardo Valencia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Alardo Valencia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-2.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-2.jpg" alt="Alardo Valencia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Alardo Valencia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-10.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-10.jpg" alt="Alardo Valencia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Alardo Valencia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-7.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-7.jpg" alt="Alardo Valencia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Alardo Valencia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-15.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/10/alardo-valencia-15.jpg" alt="Alardo Valencia" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Alardo Valencia</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/cantimploras-almonjavenes.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/cantimploras-almonjavenes.jpg" alt="Cantimploras Almonjávenes" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cantimploras Almonjávenes</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/marta-disparo.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/marta-disparo.jpg" alt="Disparo en festividades" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Disparo en festividades</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/balla-de-banderes-onil-2016.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2016/05/balla-de-banderes-onil-2016.jpg" alt="Ball de Banderes Onil 2016" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Ball de Banderes — Onil 2016</span></div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- ── DOCUMENTACIÓN ──────────────── -->
+      <div class="category reveal">
+        <p class="category-label">Documentación</p>
+        <h2 class="category-title">Ruedas de disparo</h2>
+        <div class="masonry two-col">
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-2-2.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-2-2.jpg" alt="Rueda de disparo" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Rueda de disparo</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-3.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-3.jpg" alt="Rueda de disparo" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Rueda de disparo</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-4.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/rueda-disparo-4.jpg" alt="Rueda de disparo" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Rueda de disparo</span></div>
+          </div>
+
+          <div class="masonry-item" data-src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cargador-y-tirador-2.jpg">
+            <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2015/03/cargador-y-tirador-2.jpg" alt="Cargador y tirador" loading="lazy">
+            <div class="img-overlay"><span class="img-caption">Cargador y tirador</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Copyright © 2025 Cantimploras Galayo. Producto patentado. Prohibida su reproducción.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Animaciones de entrada ────────────────
+    gsap.set(['#backLink', '#eyebrow', '#pageH1', '#pageSub'], { opacity: 0, y: 20 });
+    gsap.to('#backLink', { opacity: 1, y: 0, duration: .7, delay: .1,  ease: 'power3.out' });
+    gsap.to('#eyebrow',  { opacity: 1, y: 0, duration: .8, delay: .2,  ease: 'power3.out' });
+    gsap.to('#pageH1',   { opacity: 1, y: 0, duration: .9, delay: .35, ease: 'power3.out' });
+    gsap.to('#pageSub',  { opacity: 1, y: 0, duration: .8, delay: .5,  ease: 'power3.out' });
+
+    // ── Reveal por scroll ─────────────────────
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          gsap.to(entry.target, { opacity: 1, y: 0, duration: .8, ease: 'power3.out' });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => {
+      gsap.set(el, { opacity: 0, y: 40 });
+      observer.observe(el);
+    });
+
+    // ── Lightbox ──────────────────────────────
+    const lightbox    = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lbClose     = document.getElementById('lightbox-close');
+
+    document.querySelectorAll('.masonry-item').forEach(item => {
+      item.addEventListener('click', () => {
+        lightboxImg.src = item.dataset.src;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lightboxImg.src = ''; }, 350);
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    /* ─── MOBILE MENU ─── */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      gsap.fromTo('.mobile-nav-links li', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .45, stagger: .07, ease: 'power3.out', delay: .25 });
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+      
+    }
+    hamburger.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+  </script>
+
+</body>
+</html>

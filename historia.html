@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuestra historia — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      height: auto;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── HERO ────────────────────────── */
+    .page-hero {
+      padding: 120px 24px 80px;
+      background: #fff;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-hero-inner {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 20px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin: 0 0 20px;
+    }
+
+    .page-sub {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+      letter-spacing: -.01em;
+      max-width: 52ch;
+      margin: 0 0 40px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 980px;
+      background: var(--accent2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .badge svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── DIVIDER ─────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── GALLERY ─────────────────────── */
+    .gallery-section {
+      padding: 80px 24px;
+    }
+
+    .gallery-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .img-feature {
+      width: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.12);
+      cursor: zoom-in;
+    }
+
+    .img-feature img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .img-caption {
+      font-size: .78rem;
+      color: var(--gray);
+      letter-spacing: -.01em;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .img-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .img-card {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.08);
+      cursor: zoom-in;
+    }
+
+    .img-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s cubic-bezier(.32,.72,0,1);
+    }
+
+    .img-card:hover img { transform: scale(1.03); }
+
+    @media (max-width: 768px) {
+      .img-grid-2 { grid-template-columns: 1fr; }
+      .img-feature img { height: 260px; }
+    }
+
+    /* ── NARRATIVE ───────────────────── */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .section-h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.08;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--gray);
+      max-width: 54ch;
+      margin-bottom: 56px;
+    }
+
+    /* Pullquote grande */
+    .pullquote {
+      font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+      font-weight: 500;
+      letter-spacing: -.025em;
+      line-height: 1.45;
+      color: var(--dark);
+      border-left: 3px solid #D97706;
+      padding-left: 28px;
+      margin: 0 0 40px;
+    }
+
+    /* Párrafos narrativos */
+    .narrative-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--gray);
+      max-width: 68ch;
+      margin-bottom: 28px;
+    }
+
+    .narrative-text:last-child { margin-bottom: 0; }
+
+    /* Firma */
+    .firma {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 48px;
+      padding: 20px 28px;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .firma-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .firma-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .firma-name {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--dark);
+    }
+
+    .firma-role {
+      font-size: .82rem;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 40px;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #D97706;
+      border: 3px solid var(--white);
+      box-shadow: 0 0 0 2px #D97706;
+    }
+
+    .timeline-year {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 6px;
+    }
+
+    .timeline-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .timeline-desc {
+      font-size: .9rem;
+      line-height: 1.65;
+      color: var(--gray);
+      max-width: 52ch;
+    }
+
+    /* ── CTA ─────────────────────────── */
+    .cta-section {
+      padding: 100px 24px;
+      background: var(--surface);
+    }
+
+    .cta-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-h2 {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .btn-dark {
+      background: var(--dark);
+      color: #fff;
+      padding: 14px 30px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity .2s;
+    }
+
+    .btn-dark:hover { opacity: .82; }
+
+    .btn-dark svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-ghost {
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .3s;
+    }
+
+    .btn-ghost:hover { opacity: .7; }
+
+    /* ── REVEAL ──────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    /* ── LIGHTBOX ────────────────────── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 16px;
+      box-shadow: 0 40px 120px rgba(0,0,0,.5);
+      object-fit: contain;
+      animation: lb-in .3s cubic-bezier(.32,.72,0,1);
+    }
+
+    @keyframes lb-in {
+      from { opacity: 0; transform: scale(.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+
+    #lightbox-close:hover { background: rgba(255,255,255,.25); }
+
+    #lightbox-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    /* ── FOOTER ──────────────────────── */
+    footer {
+      padding: 28px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--gray);
+      letter-spacing: -.01em;
+    }
+
+    footer a {
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover { opacity: .7; }
+
+    /* ── RESPONSIVE ──────────────────── */
+
+    /* Tablet (≤1024px) */
+    @media (max-width: 1024px) {
+      .img-feature img { height: 420px; }
+      .section { padding: 80px 24px; }
+      .gallery-section { padding: 60px 24px; }
+      .cta-section { padding: 80px 24px; }
+    }
+
+    /* Mobile grande (≤768px) */
+    @media (max-width: 768px) {
+      /* Nav */
+      #nav { width: calc(100% - 32px); left: 16px; transform: none; }
+      .nav-inner { justify-content: space-between; padding: 5px 5px 5px 16px; }
+      .nav-links { display: none; }
+
+      /* Hero */
+      .page-hero { padding: 90px 20px 56px; }
+      .back-link { margin-bottom: 32px; }
+      .page-sub { max-width: 100%; }
+      .badge-row { gap: 8px; }
+
+      /* Sections */
+      .section { padding: 60px 20px; }
+      .section-sub { max-width: 100%; margin-bottom: 36px; }
+
+      /* Gallery */
+      .gallery-section { padding: 48px 20px; }
+      .img-feature img { height: 240px; }
+      .img-grid-2 { grid-template-columns: 1fr; }
+      .img-card img { height: 240px; }
+
+      /* Pullquote */
+      .pullquote { padding-left: 18px; font-size: 1.1rem; }
+
+      /* Narrative */
+      .narrative-text { max-width: 100%; font-size: 1rem; }
+
+      /* Firma */
+      .firma {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Timeline */
+      .timeline { padding-left: 22px; }
+      .timeline-desc { max-width: 100%; }
+
+      /* CTA */
+      .cta-section { padding: 60px 20px; }
+      .cta-inner { padding: 0; }
+    }
+
+    /* Mobile pequeño (≤480px) */
+    @media (max-width: 480px) {
+      .nav-inner { padding: 5px 5px 5px 14px; }
+      .nav-cta { padding: 8px 14px; font-size: 12px; }
+      .page-hero { padding: 80px 16px 48px; }
+      .section { padding: 48px 16px; }
+      .gallery-section { padding: 36px 16px; }
+      .cta-section { padding: 48px 16px; }
+      .img-feature img { height: 200px; }
+      .img-card img { height: 200px; }
+      .img-feature { border-radius: 18px; }
+      .img-card { border-radius: 14px; }
+      .pullquote { padding-left: 14px; }
+      .badge { font-size: 10px; padding: 5px 10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── LIGHTBOX ── -->
+  <div id="lightbox">
+    <button id="lightbox-close">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- ── NAV ── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="VISUAL/NUEVO-LOGO.png" style="height:28px;width:auto;display:block;position:relative;top:-2px;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#seguridad">Seguridad</a></li>
+        <li><a href="index.html#itc">Legislación</a></li>
+        <li><a href="index.html#servicios">Recursos</a></li>
+      </ul>
+      <a href="index.html#contacto" class="nav-cta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.9 10.74 19.79 19.79 0 011.93 2.18 2 2 0 013.92 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+        </svg>
+        Contacto
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <a href="index.html#seguridad" class="back-link reveal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Volver
+      </a>
+      <p class="eyebrow reveal">Historia · Desde 1969</p>
+      <h1 class="page-h1 reveal">Origen de las<br>cantimploras.</h1>
+      <p class="page-sub reveal">La historia de cómo un festero de Moros y Cristianos inventó la cantimplora y transformó para siempre la seguridad en las fiestas de pólvora.</p>
+      <div class="badge-row reveal">
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Desde 1969
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Inventor Galayo
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          2 modelos
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── IMAGEN PRINCIPAL ── -->
+  <div class="gallery-section" style="padding-bottom:0;">
+    <div class="gallery-inner">
+      <div class="img-feature reveal">
+        <img src="VISUAL/HH.png" alt="Festeros de Moros y Cristianos con cantimploras Galayo">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NARRATIVA ── -->
+  <section class="section">
+    <div class="section-inner">
+
+      <p class="eyebrow reveal">En palabras de Galayo</p>
+      <h2 class="section-h2 reveal">Una idea que<br>cambió las fiestas.</h2>
+
+      <blockquote class="pullquote reveal">
+        "Allá por los años 70, tras muchos años disparando en los alardos de las fiestas de Moros y Cristianos, me surgió la idea de crear algo para facilitarnos las cosas y para disparar con mayor seguridad."
+      </blockquote>
+
+      <p class="narrative-text reveal">
+        Antes de la cantimplora, los festeros transportaban la pólvora con lo que podían: cajones de madera, bolsas de plástico, botellas de vidrio, cartuchos artesanos de papel de periódico. Cada disparo requería la ayuda de un «cargador», una persona a su lado que transportara la pólvora y le fuera cargando el arma a ojo.
+      </p>
+
+      <p class="narrative-text reveal">
+        Fue entonces cuando Galayo inventó la cantimplora. Una solución que, de golpe, supuso la desaparición de la figura del cargador: una única persona podía cargarse su propio trabuco y no necesitaba de ayuda externa.
+      </p>
+
+      <p class="narrative-text reveal">
+        Las primeras cantimploras estaban fabricadas con chapa y forradas con piel en color rojo, marrón o negro. Materiales que, ante una explosión, se transformarían en metralla —un riesgo que el propio inventor reconoce— pero que abrieron el camino para seguir trabajando, mejorar el diseño y aumentar la seguridad de estos depósitos.
+      </p>
+
+      <p class="narrative-text reveal">
+        Hoy son ya dos los modelos diseñados, cada uno con mayores medidas de seguridad que el anterior. Un legado del que Galayo se siente orgulloso: no solo como inventor, sino como festero que vive estas tradiciones con el corazón.
+      </p>
+
+      <div class="firma reveal" id="firma-galayo" style="cursor:pointer;">
+        <div class="firma-icon" style="background:none;overflow:hidden;">
+          <img src="VISUAL/ICONO-CEO.png" alt="Galayo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+        </div>
+        <div>
+          <div class="firma-name">Galayo</div>
+          <div class="firma-role">Inventor y fundador · Cantimploras Galayo</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── IMÁGENES: PRIMERAS CANTIMPLORAS ── -->
+  <div class="gallery-section">
+    <div class="gallery-inner">
+      <p class="eyebrow reveal" style="margin-bottom:28px;">Las primeras cantimploras</p>
+      <div class="img-grid-2">
+        <div class="img-card reveal">
+          <img src="VISUAL/H1.png" alt="Primera cantimplora roja de chapa y piel — Galayo">
+        </div>
+        <div class="img-card reveal">
+          <img src="VISUAL/H2.png" alt="Cantimploras de metal de primeros modelos — Galayo">
+        </div>
+      </div>
+      <p class="img-caption reveal">Los primeros modelos: chapa con forro de piel en rojo, marrón o negro</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── TIMELINE ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">Evolución</p>
+      <h2 class="section-h2 reveal">Más de medio siglo<br>de innovación.</h2>
+      <p class="section-sub reveal">Cada generación de cantimplora ha incorporado mejoras de seguridad sobre la anterior.</p>
+
+      <div class="timeline">
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Años 70</div>
+          <div class="timeline-title">Nacimiento de la cantimplora</div>
+          <p class="timeline-desc">Galayo inventa la primera cantimplora: chapa forrada con piel. Desaparece la figura del «cargador» en las fiestas de Moros y Cristianos.</p>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Modelo 1975</div>
+          <div class="timeline-title">Primera mejora de seguridad</div>
+          <p class="timeline-desc">Nuevo diseño con materiales más seguros. Se introducen mejoras estructurales para reducir el riesgo de metralla ante una explosión accidental.</p>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Modelo 1980</div>
+          <div class="timeline-title">Diseño de referencia</div>
+          <p class="timeline-desc">El modelo 1980 se convierte en el estándar del sector. Mayor capacidad, mejor ergonomía y materiales específicamente seleccionados para uso pirotécnico.</p>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2017 — RD 130/2017</div>
+          <div class="timeline-title">Adaptación normativa ITC 26</div>
+          <p class="timeline-desc">Galayo desarrolla el kit de adaptación a la nueva legislación vigente, garantizando el cumplimiento íntegro de la normativa para todos los modelos.</p>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Hoy</div>
+          <div class="timeline-title">Referente industrial</div>
+          <p class="timeline-desc">Más de 50 años de trayectoria. Tres modelos patentados. Fabricación exclusiva en Ibi, Alicante. El único fabricante industrial de cantimploras en España.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CTA ── -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <p class="eyebrow reveal" style="text-align:center;">¿Hablamos?</p>
+      <h2 class="cta-h2 reveal">Descubre nuestras cantimploras.</h2>
+      <p class="cta-sub reveal">Más de medio siglo de experiencia en cada pieza. Consulta nuestros modelos y precios sin compromiso.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;">
+        <a href="precios.html" class="btn-dark reveal">
+          Ver productos
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="index.html#contacto" class="btn-ghost reveal">Contactar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>© 2025 <a href="index.html">Cantimploras Galayo</a> · Fabricante industrial · Ibi, Alicante</p>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.section .reveal, .gallery-section .reveal, .cta-section .reveal, .page-hero .reveal').forEach(el => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: .9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        }
+      });
+    });
+
+    // Hero reveals on load
+    gsap.utils.toArray('.page-hero .reveal').forEach((el, i) => {
+      gsap.to(el, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', delay: .15 + i * .12 });
+    });
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+
+    function closeLb() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.img-card img, .img-feature img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => {
+        lbImg.src = img.src;
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    document.getElementById('firma-galayo').addEventListener('click', () => {
+      lbImg.src = 'VISUAL/CEO.jpeg';
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLb);
+    lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+  </script>
+
+</body>
+</html>

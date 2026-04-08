@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kit de Adaptación ITC 26 — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      height: auto;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── HERO ────────────────────────── */
+    .page-hero {
+      padding: 120px 24px 80px;
+      background: #fff;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-hero-inner {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 20px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin: 0 0 20px;
+    }
+
+    .page-sub {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+      letter-spacing: -.01em;
+      max-width: 52ch;
+      margin: 0 0 40px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 980px;
+      background: var(--accent2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .badge svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── SECTION ─────────────────────── */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .section-h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.08;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--gray);
+      max-width: 54ch;
+      margin-bottom: 56px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── COMPONENTS GRID ─────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.05);
+      border-radius: 24px;
+      padding: 32px 28px;
+      transition: transform .5s cubic-bezier(.32,.72,0,1), box-shadow .5s cubic-bezier(.32,.72,0,1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px -15px rgba(0,0,0,.1);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent2);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: .875rem;
+      line-height: 1.65;
+      color: var(--gray);
+    }
+
+    /* ── PRICING ─────────────────────── */
+    .models-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .model-card {
+      background: var(--dark);
+      border-radius: 28px;
+      padding: 48px 40px;
+    }
+
+    .model-card.light {
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    .model-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 980px;
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7);
+      margin-bottom: 24px;
+    }
+
+    .model-card.light .model-tag {
+      background: var(--accent2);
+      color: var(--accent);
+    }
+
+    .model-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .model-card.light .model-name { color: var(--dark); }
+
+    .model-year {
+      font-size: .85rem;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 28px;
+    }
+
+    .model-card.light .model-year { color: var(--gray); }
+
+    .model-price-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+
+    .model-price {
+      font-size: 3.2rem;
+      font-weight: 700;
+      letter-spacing: -.04em;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .model-card.light .model-price { color: var(--dark); }
+
+    .model-price-note {
+      font-size: .85rem;
+      color: rgba(255,255,255,.45);
+      padding-bottom: 6px;
+    }
+
+    .model-card.light .model-price-note { color: var(--gray); }
+
+    .model-options {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .model-options li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: .9rem;
+      color: rgba(255,255,255,.72);
+      line-height: 1.45;
+    }
+
+    .model-card.light .model-options li { color: var(--gray); }
+
+    .model-options li svg {
+      width: 16px;
+      height: 16px;
+      stroke: #D97706;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* 1975 sub-options */
+    .sub-options {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,.07);
+      border-radius: 14px;
+      padding: 14px 18px;
+    }
+
+    .model-card.light .sub-option {
+      background: rgba(0,0,0,.05);
+    }
+
+    .sub-option-name {
+      font-size: .88rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.85);
+    }
+
+    .model-card.light .sub-option-name { color: var(--dark); }
+
+    .sub-option-price {
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: #fff;
+    }
+
+    .model-card.light .sub-option-price { color: var(--dark); }
+
+    /* ── AVISO ───────────────────────── */
+    .aviso-card {
+      background: #FFF8F0;
+      border: 1px solid rgba(146,64,14,.15);
+      border-radius: 24px;
+      padding: 36px 40px;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+
+    .aviso-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent2);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .aviso-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .aviso-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .aviso-desc {
+      font-size: .92rem;
+      line-height: 1.65;
+      color: var(--gray);
+    }
+
+    /* ── GALLERY ─────────────────────── */
+    .gallery-section {
+      padding: 80px 24px;
+    }
+
+    .gallery-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .img-feature {
+      width: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.12);
+    }
+
+    .img-feature img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .img-caption {
+      font-size: .78rem;
+      color: var(--gray);
+      letter-spacing: -.01em;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .img-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .img-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .img-grid-2-1 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+    }
+
+    .img-card {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.08);
+    }
+
+    .img-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s cubic-bezier(.32,.72,0,1);
+    }
+
+    .img-card:hover img { transform: scale(1.03); }
+
+    .img-card-tall img { height: 360px; }
+
+    @media (max-width: 768px) {
+      .img-grid-3 { grid-template-columns: 1fr; }
+      .img-grid-2 { grid-template-columns: 1fr; }
+      .img-grid-2-1 { grid-template-columns: 1fr; }
+      .img-feature img { height: 260px; }
+    }
+
+    /* ── CTA ─────────────────────────── */
+    .cta-section {
+      padding: 100px 24px;
+      background: var(--surface);
+    }
+
+    .cta-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-h2 {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .btn-dark {
+      background: var(--dark);
+      color: #fff;
+      padding: 14px 30px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity .2s;
+    }
+
+    .btn-dark:hover { opacity: .82; }
+
+    .btn-dark svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-ghost {
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .3s;
+    }
+
+    .btn-ghost:hover { opacity: .7; }
+
+    /* ── REVEAL ──────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    /* ── LIGHTBOX ────────────────────── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 16px;
+      box-shadow: 0 40px 120px rgba(0,0,0,.5);
+      object-fit: contain;
+      animation: lb-in .3s cubic-bezier(.32,.72,0,1);
+    }
+
+    @keyframes lb-in {
+      from { opacity: 0; transform: scale(.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+
+    #lightbox-close:hover { background: rgba(255,255,255,.25); }
+
+    #lightbox-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .img-card, .img-feature { cursor: zoom-in; }
+
+    /* ── FOOTER ──────────────────────── */
+    footer {
+      padding: 28px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--gray);
+      letter-spacing: -.01em;
+    }
+
+    footer a {
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover { opacity: .7; }
+
+    /* ── RESPONSIVE ──────────────────── */
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .models-grid { grid-template-columns: 1fr; }
+      .aviso-card { flex-direction: column; gap: 20px; padding: 28px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="VISUAL/NUEVO-LOGO.png" style="height:28px;width:auto;display:block;position:relative;top:-2px;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#seguridad">Seguridad</a></li>
+        <li><a href="index.html#itc">Legislación</a></li>
+        <li><a href="index.html#servicios">Recursos</a></li>
+      </ul>
+      <a href="index.html#contacto" class="nav-cta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.9 10.74 19.79 19.79 0 011.93 2.18 2 2 0 013.92 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+        </svg>
+        Contacto
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <a href="index.html#servicios" class="back-link reveal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Volver
+      </a>
+      <p class="eyebrow reveal">Normativa · ITC 26 / RD 130/2017</p>
+      <h1 class="page-h1 reveal">Kit de Adaptación<br>a la ITC 26.</h1>
+      <p class="page-sub reveal">Adaptamos tu cantimplora existente a la normativa vigente. Piezas originales, instalación incluida sin coste extra.</p>
+      <div class="badge-row reveal">
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+          RD 130/2017
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          Instalación manual
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          2 Modelos compatibles
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── IMAGEN PRINCIPAL ── -->
+  <div class="gallery-section" style="padding-bottom:0;">
+    <div class="gallery-inner">
+      <div class="img-feature reveal">
+        <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/kit-de-adaptacic393n-con-piezas-detalladas.jpg" alt="Kit de adaptación ITC 26 con piezas detalladas">
+      </div>
+      <p class="img-caption reveal">Piezas que componen el kit de adaptación a la normativa ITC 26</p>
+    </div>
+  </div>
+
+  <!-- ── QUÉ INCLUYE ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">Componentes</p>
+      <h2 class="section-h2 reveal">Piezas originales<br>de fábrica.</h2>
+      <p class="section-sub reveal">Cada kit incluye únicamente piezas fabricadas por Galayo, garantizando la compatibilidad total y el cumplimiento de todos los requisitos de la normativa ITC 26.</p>
+
+      <div class="features-grid">
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="feature-title">Tapa delantera redonda</div>
+          <p class="feature-desc">Tapa frontal homologada modelo ITC 26, fabricada con materiales ignífugos que cumplen los estándares del Reglamento de Explosivos.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div class="feature-title">Mecanismo de cierre de seguridad</div>
+          <p class="feature-desc">Sistema de bloqueo que impide la apertura accidental de la cantimplora durante el transporte y manipulación previa al disparo.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="feature-title">Orejeta para precintado</div>
+          <p class="feature-desc">Accesorio de fijación que permite el precintado con brida o alambre, cumpliendo el requisito de trazabilidad exigido por la ITC 26.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <div class="feature-title">Tapón antichispas</div>
+          <p class="feature-desc">Tapón fabricado con material antiinflamable dotado de anclajes que garantizan su sujeción firme durante el uso y evitan pérdidas accidentales.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          </div>
+          <div class="feature-title">Numeración de referencia</div>
+          <p class="feature-desc">Cada cantimplora adaptada recibe un número de referencia único para su identificación y trazabilidad conforme a la normativa vigente.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="feature-title">Instalación sin coste extra</div>
+          <p class="feature-desc">Envíanos tu cantimplora y nosotros realizamos la instalación completa del kit sin ningún cargo adicional al precio del propio kit.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FOTOS KIT 1980 ── -->
+  <div class="gallery-section">
+    <div class="gallery-inner">
+      <p class="eyebrow reveal" style="margin-bottom:28px;">Modelo 1980 — Kit instalado</p>
+      <div class="img-grid-3">
+        <div class="img-card reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2020/12/kit-adaptacion-cantimplora-1980-1.jpg?w=1000" alt="Kit de adaptación cantimplora 1980 — vista 1">
+        </div>
+        <div class="img-card reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2020/12/kit-adaptacion-cantimplora-1980-2.jpg?w=1000" alt="Kit de adaptación cantimplora 1980 — vista 2">
+        </div>
+        <div class="img-card reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2020/12/kit-adaptacion-cantimplora-1980-3.jpg?w=687" alt="Kit de adaptación cantimplora 1980 — detalle">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── PRECIOS POR MODELO ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">Tarifas</p>
+      <h2 class="section-h2 reveal">Precio según<br>tu modelo.</h2>
+      <p class="section-sub reveal">Disponemos de kits específicos para cada modelo de cantimplora Galayo. Consulta la opción que corresponde a tu unidad.</p>
+
+      <div class="models-grid">
+
+        <!-- Modelo 1980 -->
+        <div class="model-card reveal">
+          <div class="model-tag">Modelo 1980</div>
+          <div class="model-name">Cantimplora 1980</div>
+          <div class="model-year">Fabricación a partir de 1980</div>
+          <div class="model-price-wrap">
+            <div class="model-price">6 €</div>
+            <div class="model-price-note">+ IVA</div>
+          </div>
+          <ul class="model-options">
+            <li>
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Orejeta para cincha de sujeción
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Numeración de referencia incluida
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Piezas de recambio adicionales según necesidad
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Instalación completa sin coste extra
+            </li>
+          </ul>
+        </div>
+
+        <!-- Modelo 1975 -->
+        <div class="model-card light reveal">
+          <div class="model-tag">Modelo 1975</div>
+          <div class="model-name">Cantimplora 1975</div>
+          <div class="model-year">Fabricación anterior a 1980 · Autorización administrativa pendiente</div>
+          <div class="model-price-wrap">
+            <div class="model-price" style="font-size:1.9rem;padding-bottom:4px;">3 opciones</div>
+          </div>
+          <div class="sub-options">
+            <div class="sub-option">
+              <span class="sub-option-name">Kit genérico con tapa tipo castillo</span>
+              <span class="sub-option-price">10 €</span>
+            </div>
+            <div class="sub-option">
+              <span class="sub-option-name">Kit genérico con tapa lisa</span>
+              <span class="sub-option-price">10 €</span>
+            </div>
+            <div class="sub-option">
+              <span class="sub-option-name">Tapa personalizada con material ignífugo</span>
+              <span class="sub-option-price">15 €</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FOTOS COMPARACIÓN 1975 ── -->
+  <div class="gallery-section">
+    <div class="gallery-inner">
+      <p class="eyebrow reveal" style="margin-bottom:28px;">Modelo 1975 — Comparativas</p>
+      <div class="img-grid-2" style="margin-bottom:14px;">
+        <div class="img-card img-card-tall reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/comparacion-modelos-1975-y-2017.jpg" alt="Comparación modelos 1975 y 2017">
+        </div>
+        <div class="img-card img-card-tall reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/cantimplora-1975-y-los-3-kits-posibles.jpg" alt="Cantimplora 1975 y los 3 kits posibles">
+        </div>
+      </div>
+      <div class="img-grid-2">
+        <div class="img-card reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/3-kits-posibles.jpg" alt="Los 3 kits posibles para el modelo 1975">
+        </div>
+        <div class="img-card reveal">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/comparativa-espesores.jpg" alt="Comparativa de espesores entre modelos">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── AVISO MODELO 1975 ── -->
+  <section class="section" style="padding-top:0;">
+    <div class="section-inner">
+      <div class="aviso-card reveal">
+        <div class="aviso-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
+        <div>
+          <div class="aviso-title">Recomendación sobre el modelo 1975</div>
+          <p class="aviso-desc">Galayo desaconseja el uso del modelo 1975 debido al deterioro natural de los materiales tras más de 40 años de uso. La degradación progresiva puede suponer un riesgo para la seguridad del tirador. Si dispones de este modelo, te recomendamos valorar la adquisición de una nueva cantimplora para garantizar la máxima seguridad.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;" class="reveal">
+        <div class="img-feature" style="border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.10);">
+          <img src="https://cantimplorasdepolvora.wordpress.com/wp-content/uploads/2019/04/resultado-explosic393n-cantimplora-modelo-1975.jpg" alt="Resultado de explosión en cantimplora modelo 1975" style="height:400px;">
+        </div>
+        <p class="img-caption">Resultado de una explosión en una cantimplora modelo 1975 por degradación del material</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CTA ── -->
+  <div class="cta-section">
+    <div class="cta-inner">
+      <p class="eyebrow reveal">Contacto</p>
+      <h2 class="cta-h2 reveal">¿Adaptamos<br>tu cantimplora?</h2>
+      <p class="cta-sub reveal">Envíanos tu cantimplora o contáctanos para gestionar el kit de adaptación. La instalación no tiene coste adicional.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;" class="reveal">
+        <a href="tel:644729218" class="btn-dark">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.9 10.74 19.79 19.79 0 011.93 2.18 2 2 0 013.92 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          644 729 218
+        </a>
+        <a href="index.html#contacto" class="btn-ghost">
+          Formulario de contacto
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>© 2025 Cantimploras Galayo · Fabricante industrial · Ibi, Alicante · <a href="index.html">Volver al inicio</a></p>
+  </footer>
+
+  <!-- ── LIGHTBOX ── -->
+  <div id="lightbox">
+    <button id="lightbox-close">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <script>
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+
+    document.querySelectorAll('.img-card img, .img-feature img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLb() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLb);
+    lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.to('.page-hero .reveal', {
+      opacity: 1,
+      y: 0,
+      duration: .9,
+      stagger: .12,
+      ease: 'power3.out',
+      delay: .2
+    });
+
+    gsap.utils.toArray('.section .reveal, .gallery-section .reveal, .cta-section .reveal').forEach(el => {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%' },
+        opacity: 1,
+        y: 0,
+        duration: .8,
+        ease: 'power3.out'
+      });
+    });
+  </script>
+
+</body>
+</html>

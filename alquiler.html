@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alquiler Seguro — Cantimploras Galayo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --dark: #1D1D1F;
+      --gray: #6E6E73;
+      --border: #D2D2D7;
+      --surface: #F5F5F7;
+      --white: #FBFBFD;
+      --accent: #92400E;
+      --accent2: #FEF3C7;
+      --blue: #0066CC;
+    }
+
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: none;
+      border: none;
+      width: auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 5px 5px 20px;
+      height: auto;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 100px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--dark);
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+    }
+
+    .nav-links a:hover { background: rgba(0,0,0,.06); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--dark);
+      text-decoration: none;
+      letter-spacing: -.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: 100px;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── HERO ────────────────────────── */
+    .page-hero {
+      padding: 120px 24px 80px;
+      background: #fff;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-hero-inner {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: gap .3s ease;
+    }
+
+    .back-link:hover { gap: 10px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D97706;
+      margin-bottom: 20px;
+    }
+
+    .page-h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+      color: var(--dark);
+      margin: 0 0 20px;
+    }
+
+    .page-sub {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+      letter-spacing: -.01em;
+      max-width: 52ch;
+      margin: 0 0 40px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 980px;
+      background: var(--accent2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .badge svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── SECTION ─────────────────────── */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .section-h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: 1.08;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--gray);
+      max-width: 54ch;
+      margin-bottom: 56px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── FEATURES GRID ───────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.05);
+      border-radius: 24px;
+      padding: 32px 28px;
+      transition: transform .5s cubic-bezier(.32,.72,0,1), box-shadow .5s cubic-bezier(.32,.72,0,1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px -15px rgba(0,0,0,.1);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent2);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: .875rem;
+      line-height: 1.65;
+      color: var(--gray);
+    }
+
+    /* ── PRECIO ──────────────────────── */
+    .price-block {
+      background: var(--dark);
+      border-radius: 32px;
+      padding: 64px 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .price-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 12px;
+    }
+
+    .price-amount {
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -.04em;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .price-iva {
+      font-size: .9rem;
+      color: rgba(255,255,255,.45);
+      letter-spacing: -.01em;
+    }
+
+    .price-includes {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .price-includes li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: .95rem;
+      color: rgba(255,255,255,.78);
+      line-height: 1.4;
+    }
+
+    .price-includes li svg {
+      width: 18px;
+      height: 18px;
+      stroke: #D97706;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── ACUERDO ─────────────────────── */
+    .acuerdo-card {
+      background: #FFF8F0;
+      border: 1px solid rgba(146,64,14,.12);
+      border-radius: 24px;
+      padding: 40px 40px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .acuerdo-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--accent2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .acuerdo-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .acuerdo-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .acuerdo-desc {
+      font-size: .95rem;
+      line-height: 1.65;
+      color: var(--gray);
+    }
+
+    /* ── PROCEDIMIENTO ──────────────── */
+    .proc-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 48px;
+    }
+
+    .proc-step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .proc-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 44px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .proc-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--dark);
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: -.01em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .proc-body {
+      padding-bottom: 36px;
+      flex: 1;
+    }
+
+    .proc-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--dark);
+      margin-bottom: 6px;
+      padding-top: 8px;
+    }
+
+    .proc-desc {
+      font-size: .9rem;
+      line-height: 1.65;
+      color: var(--gray);
+    }
+
+    .proc-note {
+      margin-top: 36px;
+      padding: 24px 28px;
+      background: #FFF8F0;
+      border: 1.5px solid rgba(146,64,14,.2);
+      border-radius: 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .proc-note svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .proc-note p {
+      font-size: .92rem;
+      line-height: 1.65;
+      color: var(--gray);
+      margin: 0;
+    }
+
+    /* ── CTA CONTACT ─────────────────── */
+    .cta-section {
+      padding: 100px 24px;
+      background: var(--surface);
+    }
+
+    .cta-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-h2 {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .btn-dark {
+      background: var(--dark);
+      color: #fff;
+      padding: 14px 30px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity .2s;
+    }
+
+    .btn-dark:hover { opacity: .82; }
+
+    .btn-dark svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-ghost {
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .3s;
+    }
+
+    .btn-ghost:hover { opacity: .7; }
+
+    /* ── REVEAL ──────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    /* ── FOOTER MINI ─────────────────── */
+    footer {
+      padding: 28px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--gray);
+      letter-spacing: -.01em;
+    }
+
+    footer a {
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover { opacity: .7; }
+
+    /* ── RESPONSIVE ──────────────────── */
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .price-block { grid-template-columns: 1fr; padding: 40px 28px; gap: 32px; }
+      .acuerdo-card { flex-direction: column; gap: 20px; padding: 28px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="VISUAL/NUEVO-LOGO.png" style="height:28px;width:auto;display:block;position:relative;top:-2px;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#productos">Productos</a></li>
+        <li><a href="index.html#seguridad">Seguridad</a></li>
+        <li><a href="index.html#itc">Legislación</a></li>
+        <li><a href="index.html#servicios">Recursos</a></li>
+      </ul>
+      <a href="index.html#contacto" class="nav-cta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.9 10.74 19.79 19.79 0 011.93 2.18 2 2 0 013.92 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+        </svg>
+        Contacto
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <a href="index.html#servicios" class="back-link reveal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Volver
+      </a>
+      <p class="eyebrow reveal">Alquiler · ITC 26 Certificado</p>
+      <h1 class="page-h1 reveal">Alquiler Seguro.</h1>
+      <p class="page-sub reveal">Cantimploras revisadas, selladas y listas para el disparo. Cumplimiento total de la normativa ITC 26 garantizado en cada unidad.</p>
+      <div class="badge-row reveal">
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          ITC 26 — RD 130/2017
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Revisadas tras cada uso
+        </span>
+        <span class="badge">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Fabricantes desde 1969
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── QUÉ INCLUYE ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">El servicio</p>
+      <h2 class="section-h2 reveal">Todo incluido,<br>sin sorpresas.</h2>
+      <p class="section-sub reveal">Cada cantimplora de alquiler sale de nuestras instalaciones en condiciones óptimas, con todos los accesorios de seguridad y el precintado reglamentario.</p>
+
+      <div class="features-grid">
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="feature-title">Doble sistema de sellado</div>
+          <p class="feature-desc">Cada unidad se precinta con pegatina de seguridad y brida de plástico, garantizando la integridad del contenido hasta el momento del uso.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="feature-title">Revisión tras cada uso</div>
+          <p class="feature-desc">Todas las cantimploras son inspeccionadas y mantenidas por nuestro equipo después de cada alquiler, asegurando su estado perfecto.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </div>
+          <div class="feature-title">Tapones auditivos incluidos</div>
+          <p class="feature-desc">Cada unidad se entrega con tapones desechables para protección auditiva, listos para su uso inmediato durante el disparo.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          </div>
+          <div class="feature-title">Envase identificado</div>
+          <p class="feature-desc">Las cantimploras se entregan en bolsa blanca con adhesivo de seguridad y etiqueta "ALQUILER SEGURO", facilitando su identificación y trazabilidad.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="feature-title">Cumplimiento normativo total</div>
+          <p class="feature-desc">Todas las unidades están adaptadas al Reglamento de Explosivos RD 130/2017 y la normativa ITC 26 vigente.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="feature-title">Capacidad de 2 kg</div>
+          <p class="feature-desc">Cantimploras de pólvora negra de 2 kg de capacidad, con las nuevas medidas de seguridad incorporadas por Galayo.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── PRECIO ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">Tarifa</p>
+      <h2 class="section-h2 reveal">Precio por unidad.</h2>
+      <p class="section-sub reveal">Tarifa única sin costes ocultos. Para pedidos de federaciones o grandes volúmenes, consulta nuestras condiciones especiales.</p>
+
+      <div class="price-block reveal">
+        <div>
+          <p class="price-label">Precio unitario</p>
+          <div class="price-amount">9 €</div>
+          <p class="price-iva">+ IVA por unidad</p>
+        </div>
+        <ul class="price-includes">
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Cantimplora de 2 kg revisada y en perfecto estado
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Doble precintado (pegatina + brida de plástico)
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Tapones auditivos desechables incluidos
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Bolsa blanca identificada y sellada
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Documentación de cumplimiento ITC 26
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── ACUERDO UNDEF ── -->
+  <section class="section">
+    <div class="section-inner">
+      <p class="eyebrow reveal">Convenio</p>
+      <h2 class="section-h2 reveal" style="margin-bottom:40px;">Acuerdo con UNDEF y<br>Polvorín de Montealegre.</h2>
+
+      <div class="acuerdo-card reveal">
+        <div class="acuerdo-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div>
+          <div class="acuerdo-title">Precio especial para Asociaciones de Fiestas</div>
+          <p class="acuerdo-desc">Disponemos de un acuerdo con UNDEF y el Polvorín de Montealegre del Castillo para que las Asociaciones de Fiestas puedan beneficiarse del alquiler de cantimploras ya cargadas a precios ajustados. Contacta con nosotros para conocer las condiciones específicas de tu asociación.</p>
+        </div>
+      </div>
+
+      <!-- Procedimiento paso a paso -->
+      <p class="eyebrow reveal" style="margin-top:64px;margin-bottom:8px;">Paso a paso</p>
+      <h3 class="section-h2 reveal" style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:4px;">Cómo funciona el alquiler.</h3>
+      <p style="font-size:1rem;color:var(--gray);line-height:1.6;margin-bottom:0;max-width:58ch;" class="reveal">De la solicitud a la recogida, todo el ciclo en 7 pasos.</p>
+
+      <div class="proc-steps">
+
+        <div class="proc-step reveal">
+          <div class="proc-num">1</div>
+          <div class="proc-body">
+            <div class="proc-title">Obtén el permiso de disparo</div>
+            <p class="proc-desc">Cada tirador debe contar con la <strong style="color:var(--dark);">Licencia AE</strong> (Autorización Especial para armas de avancarga), gestionada por la Guardia Civil y con validez de 5 años. Para obtenerla, debes presentar en la Intervención de Armas y Explosivos de la Guardia Civil de tu domicilio:</p>
+            <ul style="margin:12px 0 12px 0;padding-left:18px;font-size:.9rem;line-height:1.8;color:var(--gray);list-style:disc;">
+              <li>Solicitud en modelo oficial de autorización especial</li>
+              <li>Certificado psicotécnico de aptitudes (centro médico homologado para permisos de armas)</li>
+              <li>Certificado de antecedentes penales y de violencia de género (puedes autorizar a la Guardia Civil a consultarlos)</li>
+              <li>Fotocopia del DNI</li>
+              <li>Justificante de pago de tasas — Modelo 790</li>
+            </ul>
+            <p class="proc-desc">Además, los ayuntamientos y asociaciones festeras exigen un <strong style="color:var(--dark);">curso de arcabucería</strong> sobre el uso seguro de pólvora negra. Nosotros participamos activamente en estas ponencias formativas. La licencia debe renovarse cada 5 años.</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">2</div>
+          <div class="proc-body">
+            <div class="proc-title">La comparsa contacta con nosotros</div>
+            <p class="proc-desc">Cada comparsa comunica a la Comisión de Fiestas del pueblo el número de cantimploras que necesita. Es la Comisión de Fiestas quien reúne todos los datos y se pone en contacto con Cantimploras Galayo con el total.</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">3</div>
+          <div class="proc-body">
+            <div class="proc-title">Entrega en punto seguro</div>
+            <p class="proc-desc">Se convoca a todos los tiradores un día concreto en un punto habilitado y seguro. Allí cada tirador recoge su cantimplora ya cargada y revisada, identificada con una brida de color: verde para la de 1 kg y roja para la de 2 kg.</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">4</div>
+          <div class="proc-body">
+            <div class="proc-title">Devolución tras el último acto</div>
+            <p class="proc-desc">Al finalizar el último acto de disparo de tus fiestas, devuelves la cantimplora directamente a nuestro equipo. Estaremos allí presentes para recoger todas las unidades de los tiradores (dependiendo de la localidad).</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">5</div>
+          <div class="proc-body">
+            <div class="proc-title">Limpieza, revisión y almacenaje seguro</div>
+            <p class="proc-desc">Limpiamos y revisamos cada cantimplora en profundidad. A continuación, las introducimos en cajas de plástico ignífugo y las trasladamos al Polvorín de Montealegre del Castillo, depósito especializado en almacenamiento y suministro de pólvora.</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">6</div>
+          <div class="proc-body">
+            <div class="proc-title">Recarga por el Polvorín</div>
+            <p class="proc-desc">Cuando un pueblo vuelve a solicitar el alquiler, el Polvorín de Montealegre se encarga de rellenar las cantimploras con pólvora a través de su empresa suministradora homologada.</p>
+          </div>
+        </div>
+
+        <div class="proc-step reveal">
+          <div class="proc-num">7</div>
+          <div class="proc-body" style="padding-bottom:0;">
+            <div class="proc-title">El ciclo se repite</div>
+            <p class="proc-desc">Cada vez que se renueva el alquiler, las cantimploras ya están limpias, revisadas y cargadas, listas para un uso seguro en las próximas fiestas.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Nota importante -->
+      <div class="proc-note reveal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <p><strong style="color:var(--dark);">Límite máximo de recogida: 2 kg de pólvora por tirador.</strong> Puedes llevar 2 cantimploras de 1 kg o 1 cantimplora de 2 kg. No está permitido recoger más de ese volumen en un solo acto de entrega.</p>
+      </div>
+
+      <div style="margin-top:24px;padding:28px 32px;background:var(--surface);border-radius:20px;display:flex;gap:16px;align-items:flex-start;" class="reveal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;">
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        <p style="font-size:.92rem;color:var(--gray);line-height:1.65;margin:0;">
+          <strong style="color:var(--dark);">Recomendación de seguridad:</strong> Galayo recomienda el uso de gafas protectoras durante la realización de disparos. La seguridad del tirador es siempre nuestra prioridad.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CTA ── -->
+  <div class="cta-section">
+    <div class="cta-inner">
+      <p class="eyebrow reveal">Contacto</p>
+      <h2 class="cta-h2 reveal">¿Hablamos?</h2>
+      <p class="cta-sub reveal">Llámanos o escríbenos para gestionar tu reserva de alquiler seguro. Respondemos en menos de 24 h.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;" class="reveal">
+        <a href="tel:644729218" class="btn-dark">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.9 10.74 19.79 19.79 0 011.93 2.18 2 2 0 013.92 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          644 729 218
+        </a>
+        <a href="index.html#contacto" class="btn-ghost">
+          Formulario de contacto
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>© 2025 Cantimploras Galayo · Fabricantes desde 1969 · Ibi, Alicante · <a href="index.html">Volver al inicio</a></p>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero reveal
+    gsap.to('.page-hero .reveal', {
+      opacity: 1,
+      y: 0,
+      duration: .9,
+      stagger: .12,
+      ease: 'power3.out',
+      delay: .2
+    });
+
+    // Scroll reveals
+    gsap.utils.toArray('.section .reveal, .cta-section .reveal').forEach(el => {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%' },
+        opacity: 1,
+        y: 0,
+        duration: .8,
+        ease: 'power3.out'
+      });
+    });
+
+    // Price block reveal
+    gsap.utils.toArray('.price-block.reveal, .acuerdo-card.reveal').forEach(el => {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%' },
+        opacity: 1,
+        y: 0,
+        duration: .9,
+        ease: 'power3.out'
+      });
+    });
+  </script>
+
+</body>
+</html>
